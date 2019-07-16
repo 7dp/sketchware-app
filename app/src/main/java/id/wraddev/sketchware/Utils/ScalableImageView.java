@@ -143,41 +143,45 @@ public class ScalableImageView extends AppCompatImageView {
                 } else if (event.getPointerCount() == 1) {
 
                     if (mIsPentoolMode) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_UP:
-                                Log.e(TAG, "onTouch: MASUK");
-                                drawPath((int) event.getX(), (int) event.getY(), mCanvas, mPaint);
-                                break;
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                            paint.setColor(Color.RED);
+                            paint.setStrokeWidth(mPaint.getStrokeWidth());
+                            paint.setStyle(Paint.Style.STROKE);
+                            paint.setStrokeJoin(Paint.Join.ROUND);
+                            paint.setStrokeCap(Paint.Cap.ROUND);
+
+                            drawPath((int) event.getX(), (int) event.getY(), mCanvas, paint);
                         }
-                    } else {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                Log.e(TAG, "onTouch action down X: " + event.getX());
-                                Log.e(TAG, "onTouch action down Y: " + event.getY());
-                                touchStart(event.getX(), event.getY());
-                                postInvalidate();
-                                break;
+                    }
+                } else {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            Log.e(TAG, "onTouch action down X: " + event.getX());
+                            Log.e(TAG, "onTouch action down Y: " + event.getY());
+                            touchStart(event.getX(), event.getY());
+                            postInvalidate();
+                            break;
 
-                            case MotionEvent.ACTION_MOVE:
-//                            if (mMode == DRAG)
-                                touchMove(event.getX(), event.getY());
-                                postInvalidate();
-                                break;
+                        case MotionEvent.ACTION_MOVE:
+                            touchMove(event.getX(), event.getY());
+                            postInvalidate();
+                            break;
 
-                            case MotionEvent.ACTION_UP:
-                                touchEnd();
-                                postInvalidate();
-                                break;
+                        case MotionEvent.ACTION_UP:
+                            touchEnd();
+                            postInvalidate();
+                            break;
 
-                            case MotionEvent.ACTION_POINTER_UP:
-                                Log.e(TAG, "#1 ACTION_POINTER_UP");
-                                break;
-                        }
+                        case MotionEvent.ACTION_POINTER_UP:
+                            Log.e(TAG, "#1 ACTION_POINTER_UP");
+                            break;
                     }
                 }
 
                 setImageMatrix(mMatrix);
-                invalidate();
+
+                postInvalidate();
                 return true;    // indicate event was handled
             }
         });
@@ -199,7 +203,7 @@ public class ScalableImageView extends AppCompatImageView {
         int width = metrics.widthPixels;
 
         mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        this.mCanvas = canvas; /*new Canvas(mBitmap);*/
+        this.mCanvas = canvas;
 
         mCurrentColor = DEFAULT_COLOR;
         mStrokeWidth = sBrushSize;
