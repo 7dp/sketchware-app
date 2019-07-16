@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.AppCompatImageView;
@@ -18,12 +19,15 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import id.wraddev.sketchware.R;
 
 import static id.wraddev.sketchware.Activities.MainActivity.TAG;
 
 public class ScalableImageView extends AppCompatImageView {
 
-    public static final int DEFAULT_COLOR = Color.YELLOW;
+    public static final int DEFAULT_COLOR = Color.BLUE;
     // Always in these 3 states
     private static final int NONE = 0;
     private static final int DRAG = 1;
@@ -42,22 +46,26 @@ public class ScalableImageView extends AppCompatImageView {
     private float mMinScale = 1f;
     private float mMaxScale = 4f;
     private float[] mM;
+    public boolean mIsPentoolMode = false;
+    private float mSaveScale = 1f;
+    private float mX;
     private int mViewWidth;
     private int mViewHeight;
-    private float mSaveScale = 1f;
     private int mOldMeasureWidth;
     private int mOldMeasureHeight;
-    private ScaleGestureDetector mScaleDetector;
-    private float mX, mY;
     private int mCurrentColor;
     private int mStrokeWidth;
+    private float mY;
+    private ScaleGestureDetector mScaleDetector;
     private ArrayList<FingerPath> paths = new ArrayList<>();
     private Path mPath;
     private Bitmap mBitmap;
     private Canvas mCanvas;
+    private Point mStartPoint;
     private Paint mPaint;
     private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
-
+    private List<Path> mPathList = new ArrayList<>();
+    private List<Point> mStartPointList = new ArrayList<>();
 
     public ScalableImageView(Context context) {
         super(context);
@@ -112,6 +120,8 @@ public class ScalableImageView extends AppCompatImageView {
                                 mMatrix.postTranslate(fixTransX, fixTransY);
                                 fixTrans();
                                 mLast.set(current.x, current.y);
+                                touchMove(event.getX(), event.getY());
+                                postInvalidate();
                             }
                             break;
 
@@ -131,30 +141,38 @@ public class ScalableImageView extends AppCompatImageView {
                     }
 
                 } else if (event.getPointerCount() == 1) {
-                    Log.e(TAG, "onTouch: 1 FINGER");
 
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            Log.e(TAG, "onTouch action down X: " + event.getX());
-                            Log.e(TAG, "onTouch action down Y: " + event.getY());
-                            touchStart(event.getX(), event.getY());
-                            postInvalidate();
-                            break;
+                    if (mIsPentoolMode) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_UP:
+                                Log.e(TAG, "onTouch: MASUK");
+                                drawPath((int) event.getX(), (int) event.getY(), mCanvas, mPaint);
+                                break;
+                        }
+                    } else {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                Log.e(TAG, "onTouch action down X: " + event.getX());
+                                Log.e(TAG, "onTouch action down Y: " + event.getY());
+                                touchStart(event.getX(), event.getY());
+                                postInvalidate();
+                                break;
 
-                        case MotionEvent.ACTION_MOVE:
+                            case MotionEvent.ACTION_MOVE:
 //                            if (mMode == DRAG)
-                            touchMove(event.getX(), event.getY());
-                            postInvalidate();
-                            break;
+                                touchMove(event.getX(), event.getY());
+                                postInvalidate();
+                                break;
 
-                        case MotionEvent.ACTION_UP:
-                            touchEnd();
-                            postInvalidate();
-                            break;
+                            case MotionEvent.ACTION_UP:
+                                touchEnd();
+                                postInvalidate();
+                                break;
 
-                        case MotionEvent.ACTION_POINTER_UP:
-                            Log.e(TAG, "#1 ACTION_POINTER_UP");
-                            break;
+                            case MotionEvent.ACTION_POINTER_UP:
+                                Log.e(TAG, "#1 ACTION_POINTER_UP");
+                                break;
+                        }
                     }
                 }
 
@@ -196,10 +214,11 @@ public class ScalableImageView extends AppCompatImageView {
         for (FingerPath path : paths) {
             mPaint.setColor(path.mColor);
             mPaint.setStrokeWidth(path.mStrokeWidth);
+            mPaint.setAntiAlias(true);
             mCanvas.drawPath(path.mPath, mPaint);
             Log.e(TAG, "onDraw: ");
         }
-
+        mBitmapPaint.setAntiAlias(true);
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.restore();
     }
@@ -228,6 +247,79 @@ public class ScalableImageView extends AppCompatImageView {
 
     private void touchEnd() {
         mPath.lineTo(mX, mY);
+    }
+
+    private void drawPath(int x, int y, Canvas canvas, Paint paint) {
+        // Draw a path on user touch
+        Path path = new Path();
+
+        if (mPathList.isEmpty()) {
+            path.moveTo(x, y);
+            mPathList.add(path);
+            mStartPoint = new Point(x, y);
+            mStartPointList.add(mStartPoint);
+            addMarkerPoint(x, y, canvas, paint);
+
+        } else {
+            boolean mustClear = false;
+            if (x <= mStartPoint.x + 25 && x >= mStartPoint.x - 25
+                    && y <= mStartPoint.y + 25 && y >= mStartPoint.y - 25) {
+
+                mPathList.get(mPathList.size() - 1).lineTo(mStartPoint.x, mStartPoint.y);
+                mPathList.get(mPathList.size() - 1).close();
+                mustClear = true;
+
+            } else {
+                mPathList.add(mPathList.get(mPathList.size() - 1));
+                mPathList.get(mPathList.size() - 1).lineTo(x, y);
+                addMarkerPoint(x, y, canvas, paint);
+            }
+
+            canvas.drawPath(mPathList.get(mPathList.size() - 1), paint);
+            if (mustClear) mPathList.clear();
+            postInvalidate();
+        }
+
+        Log.e(TAG, "path count: " + mPathList.size());
+        Log.e(TAG, "x: " + x);
+        Log.e(TAG, "y: " + y);
+    }
+
+    /**
+     * Method for draw the marker
+     * Draw 2 rectangle for fill and outline, outline rectangle overlap the fill rectangle
+     *
+     * @param x      For x coordinate
+     * @param y      For y coordinate
+     * @param canvas For marker drawing floor
+     * @param paint  For coloring the marker
+     */
+
+    private void addMarkerPoint(int x, int y, Canvas canvas, Paint paint) {
+        int size = 10;
+        float size2 = (float) size / 4;
+        Point point = new Point(x, y);
+
+        // configure paint
+        paint.setColor(getResources().getColor(R.color.red_outline));
+        paint.setStyle(Paint.Style.FILL);
+        paint.setAntiAlias(true);
+        canvas.drawRect(point.x - size, point.y - size, point.x + size, point.y + size, paint);
+        postInvalidate();
+
+        paint.setColor(getResources().getColor(R.color.red_fill));
+        canvas.drawRect(point.x - size + size2,
+                point.y - size + size2,
+                point.x + size - size2,
+                point.y + size - size2, paint);
+        postInvalidate();
+
+        // configure paint
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        paint.setColor(Color.RED);
+        paint.setAntiAlias(true);
+        paint.setDither(true);
     }
 
     public void setMaxZoom(float maxZoom) {

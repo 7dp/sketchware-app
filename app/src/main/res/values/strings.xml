@@ -3,4 +3,8 @@
     <string name="rectangle">rectangle</string>
     <string name="circle">circle</string>
     <string name="save">save</string>
+    <string name="add_rect">Add Rectangle</string>
+    <string name="add_circle">Add Circle</string>
+    <string name="pen_tool_mode">Pentool Mode</string>
+    <string name="def_mode">Default Mode</string>
 </resources>

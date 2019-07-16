@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.MediaScannerConnection;
@@ -21,7 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -33,6 +34,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import id.wraddev.sketchware.R;
@@ -44,15 +47,18 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "sketchware";
     private static final int REQUEST_CODE = 200;
-    Button mButtonSave;
+
+    ImageView mIvSave;
     ScalableImageView mScalableImageView;
-    FloatingActionButton mFabBrush;
-    FloatingActionButton mFabPen;
+    FloatingActionButton mFabPentool;
     FloatingActionButton mFabCircle;
     FloatingActionButton mFabRectangle;
     FloatingActionButton mFabPinch;
     FloatingActionMenu mActionMenu;
     DisplayMetrics metrics = new DisplayMetrics();
+
+    private List<Path> mPathList = new ArrayList<>();
+
 //    public static final int DEFAULT_COLOR = Color.RED;
 //    public static int sBrushSize = 20;
 //    private int mCurrentColor;
@@ -76,14 +82,15 @@ public class MainActivity extends AppCompatActivity {
 
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         mScalableImageView.init(metrics);
+
+
     }
 
     private void initViews() {
-        mButtonSave = findViewById(R.id.bt_save);
+        mIvSave = findViewById(R.id.iv_save);
         mScalableImageView = findViewById(R.id.scalable_image_view);
-        mFabBrush = findViewById(R.id.brush_item);
         mFabCircle = findViewById(R.id.circle_item);
-        mFabPen = findViewById(R.id.pentool_item);
+        mFabPentool = findViewById(R.id.pentool_item);
         mFabPinch = findViewById(R.id.pinch_item);
         mFabRectangle = findViewById(R.id.rectangle_item);
         mActionMenu = findViewById(R.id.fab_menu);
@@ -117,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
 
         drawRectangle(canvas, paint);
         drawCircle(canvas);
+        enterPentoolMode();
+        enterNormalMode();
         saveBitmapToGallery(mutableBitmap);
     }
 
@@ -166,8 +175,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    void enterPentoolMode() {
+        mFabPentool.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActionMenu.close(true);
+                mScalableImageView.mIsPentoolMode = true;
+            }
+        });
+    }
+
+    void enterNormalMode() {
+        mFabPinch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActionMenu.close(true);
+                mScalableImageView.mIsPentoolMode = false;
+            }
+        });
+    }
+
     private void saveBitmapToGallery(final Bitmap image) {
-        mButtonSave.setOnClickListener(new View.OnClickListener() {
+        mIvSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, ProgressDialog.STYLE_HORIZONTAL);

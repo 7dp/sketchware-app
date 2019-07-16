@@ -28,137 +28,138 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/black" />
+        android:background="@android:color/white" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
             android:layout_height="?android:actionBarSize"
             android:layout_alignParentBottom="true"
-            android:layout_margin="16dp"
-            android:background="@drawable/bg_yellow_container">
+            android:layout_marginStart="@dimen/val_16"
+            android:layout_marginEnd="@dimen/val_16"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@android:color/holo_orange_light"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="2dp"
+            app:cardPreventCornerOverlap="false">
 
-            <Space
-                android:id="@+id/my_space"
-                android:layout_width="?android:actionBarSize"
-                android:layout_height="match_parent" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/iv_undo"
-                style="@style/Widget.AppCompat.ActionButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/my_space"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_undo_black_24dp" />
+                <Space
+                    android:id="@+id/my_space"
+                    android:layout_width="?android:actionBarSize"
+                    android:layout_height="match_parent" />
 
-            <ImageView
-                android:id="@+id/iv_redo"
-                style="@style/Widget.AppCompat.ActionButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/iv_undo"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_redo_black_24dp" />
+                <ImageView
+                    android:id="@+id/iv_undo"
+                    style="@style/Widget.AppCompat.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/my_space"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_undo_black_24dp" />
 
-            <Button
-                android:id="@+id/bt_save"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="end"
-                android:layout_marginEnd="@dimen/val_8"
-                android:text="@string/save" />
+                <ImageView
+                    android:id="@+id/iv_redo"
+                    style="@style/Widget.AppCompat.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/iv_undo"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_redo_black_24dp" />
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/iv_save"
+                    style="@style/Widget.AppCompat.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="@dimen/val_8"
+                    android:src="@drawable/ic_save_black_24dp" />
 
-        <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/fab_menu"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start|center_vertical"
-            android:elevation="0dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="0dp"
-            android:paddingBottom="24dp"
-            android:splitMotionEvents="false"
-            app:menu_animationDelayPerItem="30"
-            app:menu_backgroundColor="@color/white_50"
-            app:menu_buttonSpacing="0dp"
-            app:menu_colorNormal="@android:color/white"
-            app:menu_colorPressed="@android:color/white"
-            app:menu_colorRipple="@color/gray"
-            app:menu_fab_size="mini"
-            app:menu_icon="@drawable/ic_arrow_up_24"
-            app:menu_labels_position="right"
-            app:menu_openDirection="up"
-            app:menu_showShadow="false">
+            </RelativeLayout>
 
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/circle_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_circle_24"
-                app:fab_colorNormal="@android:color/white"
-                app:fab_colorPressed="@android:color/white"
-                app:fab_colorRipple="@android:color/darker_gray"
-                app:fab_shadowRadius="2dp"
-                app:fab_size="mini"
-                tools:fab_label="@null" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/rectangle_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_rectangle_24"
-                app:fab_colorNormal="@android:color/white"
-                app:fab_colorPressed="@android:color/white"
-                app:fab_colorRipple="@android:color/darker_gray"
-                app:fab_size="mini"
-                tools:fab_label="@null" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/brush_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_brush_24"
-                app:fab_colorNormal="@android:color/white"
-                app:fab_colorPressed="@android:color/white"
-                app:fab_colorRipple="@android:color/darker_gray"
-                app:fab_size="mini"
-                tools:fab_label="@null" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/pentool_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/pen_tool"
-                app:fab_colorNormal="@android:color/white"
-                app:fab_colorPressed="@android:color/white"
-                app:fab_colorRipple="@android:color/darker_gray"
-                app:fab_size="mini"
-                tools:fab_label="@null" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/pinch_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_pinch_24"
-                app:fab_colorNormal="@android:color/white"
-                app:fab_colorPressed="@android:color/white"
-                app:fab_colorRipple="@android:color/darker_gray"
-                app:fab_size="mini"
-                tools:fab_label="@null" />
-
-        </com.github.clans.fab.FloatingActionMenu>
+        </android.support.v7.widget.CardView>
 
     </RelativeLayout>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start|center_vertical"
+        android:elevation="0dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:paddingBottom="20dp"
+        android:splitMotionEvents="false"
+        app:menu_animationDelayPerItem="25"
+        app:menu_backgroundColor="@color/black_30"
+        app:menu_buttonSpacing="0dp"
+        app:menu_colorNormal="@android:color/white"
+        app:menu_colorPressed="@android:color/white"
+        app:menu_colorRipple="@color/gray"
+        app:menu_fab_size="mini"
+        app:menu_icon="@drawable/ic_arrow_up_24"
+        app:menu_labels_position="right"
+        app:menu_labels_showShadow="true"
+        app:menu_openDirection="up"
+        app:menu_showShadow="false">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/circle_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_circle_24"
+            app:fab_colorNormal="@android:color/white"
+            app:fab_colorPressed="@android:color/white"
+            app:fab_colorRipple="@android:color/darker_gray"
+            app:fab_label="@string/add_circle"
+            app:fab_shadowRadius="2dp"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/rectangle_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_rectangle_24"
+            app:fab_colorNormal="@android:color/white"
+            app:fab_colorPressed="@android:color/white"
+            app:fab_colorRipple="@android:color/darker_gray"
+            app:fab_label="@string/add_rect"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/pentool_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pen_tool"
+            app:fab_colorNormal="@android:color/white"
+            app:fab_colorPressed="@android:color/white"
+            app:fab_colorRipple="@android:color/darker_gray"
+            app:fab_label="@string/pen_tool_mode"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/pinch_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_pinch_24"
+            app:fab_colorNormal="@android:color/white"
+            app:fab_colorPressed="@android:color/white"
+            app:fab_colorRipple="@android:color/darker_gray"
+            app:fab_label="@string/def_mode"
+            app:fab_size="mini" />
+
+    </com.github.clans.fab.FloatingActionMenu>
 
 </RelativeLayout>
